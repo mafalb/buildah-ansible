@@ -77,7 +77,7 @@ def buildah_config ( module, name, annotation, arch, author, cmd,
         buildah_basecmd.extend(r_cmd)
         r_cmd = [annotation]
         buildah_basecmd.extend(r_cmd)
-        
+
     if arch:
         r_cmd = ['--arch']
         buildah_basecmd.extend(r_cmd)
@@ -225,10 +225,10 @@ def buildah_config ( module, name, annotation, arch, author, cmd,
 
     if name:
         r_cmd = [name]
-        buildah_basecmd.extend(r_cmd) 
+        buildah_basecmd.extend(r_cmd)
 
-        
-    return module.run_command(buildah_basecmd) 
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -293,9 +293,9 @@ def main():
     user=params.get('user','')
     volume=params.get('volume', '')
     workingdir=params.get('workingdir', '')
-    
 
-    
+
+
     rc, out, err =  buildah_config(module, name, annotation, arch, author, cmd,
                                    comment, created_by, domain, entrypoint,
                                    env, healthcheck, healthcheck_interval,
@@ -314,8 +314,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-
-
-
-
-

@@ -38,7 +38,7 @@ module: buildah
 version_added: historical
 short_description: Allows the creation of Open Container Initiative (OCI) containers using the buildah command
 description:
-     - Creates, removes, and lists OCI containers using the buildah container manager. 
+     - Creates, removes, and lists OCI containers using the buildah container manager.
 options:
 
 # informational: requirements for nodes
@@ -72,24 +72,24 @@ def buildah_add ( module, name, chown, quiet, src, dest ):
         buildah_basecmd.extend(r_cmd)
         r_cmd = [chown]
         buildah_basecmd.extend(r_cmd)
-        
+
     if quiet:
         r_cmd = ['--quiet']
         buildah_basecmd.extend(r_cmd)
 
     if name:
         r_cmd = [name]
-        buildah_basecmd.extend(r_cmd) 
+        buildah_basecmd.extend(r_cmd)
 
     if src:
         r_cmd = [src]
-        buildah_basecmd.extend(r_cmd) 
+        buildah_basecmd.extend(r_cmd)
 
     if dest:
         r_cmd = [dest]
-        buildah_basecmd.extend(r_cmd) 
-        
-    return module.run_command(buildah_basecmd) 
+        buildah_basecmd.extend(r_cmd)
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -112,7 +112,7 @@ def main():
     quiet = params.get('quiet', '')
     src = params.get('src', '')
     dest = params.get('dest', '')
-    
+
     rc, out, err =  buildah_add(module, name, chown, quiet, src, dest)
 
     if rc == 0:
@@ -125,4 +125,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

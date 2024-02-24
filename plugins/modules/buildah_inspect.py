@@ -69,18 +69,18 @@ def buildah_inspect ( module, name, format, type ):
         buildah_basecmd.extend(r_cmd)
         r_cmd = [format]
         buildah_basecmd.extend(r_cmd)
-        
+
     if type:
         r_cmd = ['--type']
         buildah_basecmd.extend(r_cmd)
         r_cmd = [type]
         buildah_basecmd.extend(r_cmd)
-        
+
     if name:
         r_cmd = [name]
-        buildah_basecmd.extend(r_cmd) 
-        
-    return module.run_command(buildah_basecmd) 
+        buildah_basecmd.extend(r_cmd)
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -99,7 +99,7 @@ def main():
     name = params.get('name', '')
     format = params.get('format', '')
     type = params.get('type', '')
-    
+
     rc, out, err =  buildah_inspect(module, name, format, type)
 
     if rc == 0:

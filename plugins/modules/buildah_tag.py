@@ -74,7 +74,7 @@ def buildah_tag ( module, container_name, new_container_name ):
         r_cmd = [new_container_name]
         buildah_basecmd.extend(r_cmd)
 
-    return module.run_command(buildah_basecmd) 
+    return module.run_command(buildah_basecmd)
 
 
 def main():

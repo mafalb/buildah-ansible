@@ -59,7 +59,7 @@ EXAMPLES = '''
 
 
 '''
-def buildah_pull ( module, name, authfile, cert_dir, creds, quiet, signature_policy, tls_verify ): 
+def buildah_pull ( module, name, authfile, cert_dir, creds, quiet, signature_policy, tls_verify ):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
@@ -99,9 +99,9 @@ def buildah_pull ( module, name, authfile, cert_dir, creds, quiet, signature_pol
 
     if name:
         r_cmd = [name]
-        buildah_basecmd.extend(r_cmd) 
-        
-    return module.run_command(buildah_basecmd) 
+        buildah_basecmd.extend(r_cmd)
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -128,7 +128,7 @@ def main():
     quiet = params.get('quiet', '')
     signature_policy  = params.get('signature_policy', '')
     tls_verify = params.get('tls_verify', '')
-    
+
     rc, out, err =  buildah_pull ( module, name, authfile, cert_dir, creds, quiet, signature_policy, tls_verify )
 
     if rc == 0:
@@ -141,4 +141,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

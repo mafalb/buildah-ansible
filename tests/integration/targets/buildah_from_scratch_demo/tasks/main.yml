@@ -1,4 +1,4 @@
-- name: BUILDAH | Test "buildah from" command 
+- name: BUILDAH | Test "buildah from" command
   buildah_from:
     name: scratch
   register: from_result
@@ -13,12 +13,12 @@
 - debug: var=mount_result.stdout
 
 - name: Install packages
-  dnf: 
+  dnf:
     name: bash,coreutils
     installroot: "{{ mount_result.stdout | replace('\n', '')}}"
     releasever: 29
     state: latest
-  register: dnf_result  
+  register: dnf_result
 
 - debug: var=dnf_result
 

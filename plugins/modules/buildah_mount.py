@@ -70,9 +70,9 @@ def buildah_mount ( module, name, truncate ):
 
     if name:
         r_cmd = [name]
-        buildah_basecmd.extend(r_cmd) 
-        
-    return module.run_command(buildah_basecmd) 
+        buildah_basecmd.extend(r_cmd)
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -89,7 +89,7 @@ def main():
 
     name = params.get('name', '')
     truncate = params.get('truncate', '')
-    
+
     rc, out, err =  buildah_mount(module, name, truncate)
 
     if rc == 0:
@@ -102,4 +102,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

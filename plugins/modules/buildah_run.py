@@ -36,9 +36,9 @@ DOCUMENTATION = '''
 ---
 module: buildah_run
 version_added: historical
-short_description: Runs a specified command using the container's root 
-                   filesystem as a root filesystem, using configuration 
-                   settings inherited from the container's image or as 
+short_description: Runs a specified command using the container's root
+                   filesystem as a root filesystem, using configuration
+                   settings inherited from the container's image or as
                    specified using previous calls to the config command.
 
 
@@ -58,7 +58,7 @@ EXAMPLES = '''
   - name: BUILDAH | Test output of "buildah run <image_name> <command>" command
     buildah_run:
       name: CONTAINER-ID-OR-NAME
-      command: ls 
+      command: ls
     register: result
 
   - debug: var=result.stdout_lines
@@ -124,7 +124,7 @@ def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir
     if pivot:
         r_cmd = ['--no-pivot']
         buildah_basecmd.extend(r_cmd)
-        
+
     if pid:
         r_cmd = ['--pid']
         buildah_basecmd.extend(r_cmd)
@@ -186,7 +186,7 @@ def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir
                 buildah_basecmd.extend(r_cmd)
 
 
-    return module.run_command(buildah_basecmd) 
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -237,7 +237,7 @@ def main():
     uts = params.get('uts', '')
     volume = params.get('volume', '')
 
-    
+
     rc, out, err =  buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir, cni_plugin_path, hostname, ipc, isolation, network, pivot, pid, runtime, runtime_flag, security_options, user, uts, volume )
 
     if rc == 0:
@@ -250,4 +250,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

@@ -278,9 +278,9 @@ def buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_p
 
     if name:
         r_cmd = [name]
-        buildah_basecmd.extend(r_cmd) 
+        buildah_basecmd.extend(r_cmd)
 
-    return module.run_command(buildah_basecmd) 
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -368,17 +368,16 @@ def main():
     uts = params.get('uts', '')
     volume = params.get('volume', '')
 
-    
+
     rc, out, err =  buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_parent, cidfile, cni_config_dir, cni_plugin_path, cpu_period, cpu_quota, cpu_shares, cpuset_cpus, cpuset_mems, creds, ipc, isolation, memory, memory_swap, name, network, pid, pull, pull_always, quiet, security_options, shm_size, signature_policy, tls_verify, ulimit, userns, userns_uid_map, userns_gid_map, userns_uid_map_user, userns_gid_map_group, uts, volume )
 
     if rc == 0:
         module.exit_json(changed=True, rc=rc, stdout=out, err = err )
     else:
-        module.fail_json(msg=err) 
+        module.fail_json(msg=err)
 
 # import module snippets
 from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

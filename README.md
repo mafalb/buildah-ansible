@@ -52,7 +52,7 @@ The targeted functionality planned will include the following:
 |     unshare                    |  Run a command in a modified user namespace | NOT IMPLEMENTED |
 
 
-Test playbooks can be found in the test-playbooks/ subdirectory.  W ewill also build unit tests for the modules so we can allow the ability to run tests on our local system.  
+Test playbooks can be found in the test-playbooks/ subdirectory.  W ewill also build unit tests for the modules so we can allow the ability to run tests on our local system.
 
 
 Issues should be added to the Issues tab and we encourage you to submit fixes at any time.
@@ -60,4 +60,3 @@ Issues should be added to the Issues tab and we encourage you to submit fixes at
 If you have any questions please direct them to claudiol@redhat.com or whenry@redhat.com
 
 Thanks!
-

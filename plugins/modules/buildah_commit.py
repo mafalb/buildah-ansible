@@ -114,18 +114,18 @@ def buildah_commit(module, container, imgname, authfile, certdir,
 
     if rm:
         r_cmd = ['--rm']
-        buildah_basecmd.extend(r_cmd) 
+        buildah_basecmd.extend(r_cmd)
 
-    
+
     if container:
         r_cmd = [container]
-        buildah_basecmd.extend(r_cmd) 
+        buildah_basecmd.extend(r_cmd)
 
     if imgname:
         r_cmd = [imgname]
         buildah_basecmd.extend(r_cmd)
-        
-    return module.run_command(buildah_basecmd) 
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -164,7 +164,7 @@ def main():
     signature_policy = params.get('signature_policy', '')
     squash = params.get('squash', '')
     tls_verify = params.get('tls_verify', '')
-    
+
     rc, out, err =  buildah_commit(module, container, imgname, authfile, certdir, creds,
                                    compression, format, iidfile, quiet, rm, signature_policy,
                                    squash, tls_verify)
@@ -179,4 +179,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

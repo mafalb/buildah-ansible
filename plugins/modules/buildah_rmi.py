@@ -88,8 +88,8 @@ def buildah_rmi ( module, name, all, force, prune ):
         r_cmd = [name]
         buildah_basecmd.extend(r_cmd)
 
- 
-    return module.run_command(buildah_basecmd) 
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -110,7 +110,7 @@ def main():
     all = params.get('all', '')
     force = params.get('force', '')
     prune = params.get('prune', '')
- 
+
     rc, out, err =  buildah_rmi ( module, name, all, force, prune )
 
     if rc == 0:
@@ -123,4 +123,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

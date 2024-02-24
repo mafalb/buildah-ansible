@@ -80,7 +80,7 @@ def buildah_umount ( module, name, all ):
         r_cmd = [name]
         buildah_basecmd.extend(r_cmd)
 
-    return module.run_command(buildah_basecmd) 
+    return module.run_command(buildah_basecmd)
 
 
 def main():

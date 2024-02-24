@@ -81,7 +81,7 @@ def buildah_rm ( module, name, all ):
         buildah_basecmd.extend(r_cmd)
 
 
-    return module.run_command(buildah_basecmd) 
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -98,7 +98,7 @@ def main():
 
     name = params.get('name', '')
     all = params.get('all', '')
-    
+
     rc, out, err =  buildah_rm ( module, name, all )
 
     if rc == 0:
@@ -111,4 +111,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

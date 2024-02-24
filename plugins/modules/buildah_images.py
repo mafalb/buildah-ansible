@@ -38,7 +38,7 @@ module: buildah
 version_added: historical
 short_description: Allows the creation of Open Container Initiative (OCI) containers using the buildah command
 description:
-     - Creates, removes, and lists OCI containers using the buildah container manager. 
+     - Creates, removes, and lists OCI containers using the buildah container manager.
 options:
 
 
@@ -110,20 +110,20 @@ def buildah_list_images ( module, name, json, truncate, digests, format, filter,
     if heading:
         r_cmd = ['--noheading']
         buildah_basecmd.extend(r_cmd)
-        
+
     if name:
         r_cmd = [name]
         buildah_basecmd.extend(r_cmd)
-        
 
-    return module.run_command(buildah_basecmd) 
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
 
     module = AnsibleModule(
         argument_spec = dict(
-            name=dict(required=True), 
+            name=dict(required=True),
             json=dict(required=False, default="no", type='bool'),
             truncate=dict(required=False, default="yes", type='bool'),
             digests=dict(required=False, default="no", type='bool'),
@@ -138,14 +138,14 @@ def main():
 
     params = module.params
 
-    id = params.get('name', '') 
+    id = params.get('name', '')
     json = params.get('json', '')
     truncate = params.get('truncate', '')
     digests = params.get('digests', '')
     format = params.get('format', '')
     filter = params.get('filter', '')
     heading = params.get('heading', '')
-    
+
     rc, out, err =  buildah_list_images(module, id, json, truncate, digests, format, filter, heading)
 
     if rc == 0:
@@ -158,4 +158,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

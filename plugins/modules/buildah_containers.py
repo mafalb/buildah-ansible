@@ -112,8 +112,8 @@ def buildah_list_containers ( module, json, truncate, quiet, format, filter, hea
     if heading:
         r_cmd = ['--noheading']
         buildah_basecmd.extend(r_cmd)
-        
-    return module.run_command(buildah_basecmd) 
+
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -138,7 +138,7 @@ def main():
     format = params.get('format', '')
     filter = params.get('filter', '')
     heading = params.get('heading', '')
-    
+
     rc, out, err =  buildah_list_containers(module, json, truncate, quiet, format, filter, heading)
 
     if rc == 0:
@@ -151,4 +151,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-

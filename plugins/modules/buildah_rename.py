@@ -73,7 +73,7 @@ def buildah_rename ( module, container_name, new_container_name ):
         r_cmd = [new_container_name]
         buildah_basecmd.extend(r_cmd)
 
-    return module.run_command(buildah_basecmd) 
+    return module.run_command(buildah_basecmd)
 
 
 def main():
@@ -90,7 +90,7 @@ def main():
 
     container_name = params.get('container_name', '')
     new_container_name = params.get('new_container_name', '')
-    
+
     rc, out, err =  buildah_rename ( module, container_name, new_container_name )
 
     if rc == 0:
@@ -103,4 +103,3 @@ from ansible.module_utils.basic import *
 from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
-
