@@ -1,7 +1,11 @@
+---
 - name: BUILDAH | Test "buildah rename <container_name/ID> <new_container_name>" command
-  buildah_rename:
+  mafalb.buildah.buildah_rename:
     container_name: fedora-working-container
     new_container_name: fedora-working-container-renamed
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
+...

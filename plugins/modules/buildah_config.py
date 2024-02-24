@@ -51,14 +51,12 @@ author:
 '''
 
 EXAMPLES = '''
+- name: BUILDAH | Test output of "buildah add --noheading <image_name>" command
+  buildah_add:
+    heading: false
+  register: result
 
-  - name: BUILDAH | Test output of "buildah add --noheading <image_name>" command
-    buildah_add:
-      heading: no
-    register: result
-
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 def buildah_config ( module, name, annotation, arch, author, cmd,
                    comment, created_by, domain, entrypoint,

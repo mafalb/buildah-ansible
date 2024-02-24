@@ -50,15 +50,13 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah tag <image_name> <new image name>" command
-    buildah_tag:
-      container_name: CONTAINER-ID-OR-NAME
-      new_container_name: CONTAINER-ID-OR-NAME
-    register: result
+- name: BUILDAH | Test output of "buildah tag <image_name> <new image name>" command
+  buildah_tag:
+    container_name: CONTAINER-ID-OR-NAME
+    new_container_name: CONTAINER-ID-OR-NAME
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_tag ( module, container_name, new_container_name ):
 

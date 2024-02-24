@@ -50,34 +50,33 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah containers <image_name>" command
-    buildah_containers:
-      truncate: yes
-    register: result
+- name: BUILDAH | Test output of "buildah containers <image_name>" command
+  buildah_containers:
+    truncate: true
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test JSON output of "buildah containers --json <image_name>" command
-    buildah_containers:
-      json: yes
-    register: result
+- name: BUILDAH | Test JSON output of "buildah containers --json <image_name>" command
+  buildah_containers:
+    json: true
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test output of "buildah containers --notruncate <image_name>" command
-    buildah_containers:
-      truncate: no
-    register: result
+- name: BUILDAH | Test output of "buildah containers --notruncate <image_name>" command
+  buildah_containers:
+    truncate: false
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test output of "buildah containers --noheading <image_name>" command
-    buildah_containers:
-      heading: no
-    register: result
+- name: BUILDAH | Test output of "buildah containers --noheading <image_name>" command
+  buildah_containers:
+    heading: false
+  register: result
 
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 def buildah_list_containers ( module, json, truncate, quiet, format, filter, heading ):
 

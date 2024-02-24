@@ -50,38 +50,37 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah images <image_name>" command
-    buildah_images:
-      name: docker.io/library/fedora
-      truncate: yes
-    register: result
+- name: BUILDAH | Test output of "buildah images <image_name>" command
+  buildah_images:
+    name: docker.io/library/fedora
+    truncate: true
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test JSON output of "buildah images --json <image_name>" command
-    buildah_images:
-      name: docker.io/library/fedora
-      json: yes
-    register: result
+- name: BUILDAH | Test JSON output of "buildah images --json <image_name>" command
+  buildah_images:
+    name: docker.io/library/fedora
+    json: true
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test output of "buildah images --no-trunc <image_name>" command
-    buildah_images:
-      name: docker.io/library/fedora
-      truncate: no
-    register: result
+- name: BUILDAH | Test output of "buildah images --no-trunc <image_name>" command
+  buildah_images:
+    name: docker.io/library/fedora
+    truncate: false
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test output of "buildah images --noheading <image_name>" command
-    buildah_images:
-      name: docker.io/library/fedora
-      heading: no
-    register: result
+- name: BUILDAH | Test output of "buildah images --noheading <image_name>" command
+  buildah_images:
+    name: docker.io/library/fedora
+    heading: false
+  register: result
 
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 def buildah_list_images ( module, name, json, truncate, digests, format, filter, heading ):
 

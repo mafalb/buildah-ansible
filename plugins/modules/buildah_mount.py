@@ -49,14 +49,12 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah add <image_name>" command
-    buildah_mount:
-      truncate: yes
-    register: result
+- name: BUILDAH | Test output of "buildah add <image_name>" command
+  buildah_mount:
+    truncate: true
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_mount ( module, name, truncate ):
 

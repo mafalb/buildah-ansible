@@ -50,15 +50,13 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah push <image_name>" command
-    buildah_push:
-      name: IMAGE
-      quiet: yes
-    register: result
+- name: BUILDAH | Test output of "buildah push <image_name>" command
+  buildah_push:
+    name: IMAGE
+    quiet: true
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_push ( module, name, dest, authfile, cert_dir, creds, quiet, signature_policy, tls_verify ):
 

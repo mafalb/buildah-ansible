@@ -1,14 +1,20 @@
+---
 - name: BUILDAH | Test output of "buildah mount using container_name" command
-  buildah_mount:
+  mafalb.buildah.buildah_mount:
     name: working-container
-    truncate: yes
+    truncate: true
   register: result
 
-- debug: var=result
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result
 
 - name: BUILDAH | Test output of "buildah mount using container ID" command
-  buildah_mount:
+  mafalb.buildah.buildah_mount:
     name: 79f3b6b5804f
   register: result
 
-- debug: var=result
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
+...

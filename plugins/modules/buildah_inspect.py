@@ -49,14 +49,12 @@ author:
 '''
 
 EXAMPLES = '''
+- name: BUILDAH | Test output of "buildah inspect <image_name>" command
+  buildah_inspect:
+    name: image
+  register: result
 
-  - name: BUILDAH | Test output of "buildah inspect <image_name>" command
-    buildah_inspect:
-      name: image
-    register: result
-
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 def buildah_inspect ( module, name, format, type ):
 

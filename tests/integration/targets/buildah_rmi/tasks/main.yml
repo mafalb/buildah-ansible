@@ -1,6 +1,6 @@
 # - name: BUILDAH | Test output of "buildah rmi using --prune" command
 #   buildah_rmi:
-#     prune: yes
+#     prune: true
 #   register: result
 #   tags:
 #     - prune
@@ -8,25 +8,34 @@
 # - debug: var=result
 
 - name: BUILDAH | Create a buildah
-  buildah_from:
+  mafalb.buildah.buildah_from:
     name: fedora:latest
   register: __buildah
 
-- shell: |
-    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+- name: BUILDAH | Get container ID
+  ansible.builtin.shell:
+    executable: /bin/bash
+    cmd: |
+      set -o pipefail
+      buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+  changed_when: false
   register: __buildah_ls
 
 - name: BUILDAH | Test output of "buildah rmi using container ID" command
-  buildah_rmi:
+  mafalb.buildah.buildah_rmi:
     name: "{{ __buildah_ls.stdout | trim }}"
-    force: yes
+    force: true
   register: result
 
-- debug: var=result
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result
 
 - name: BUILDAH | Test output of "buildah rm using all option" command
-  buildah_rmi:
-    all: yes
+  mafalb.buildah.buildah_rmi:
+    all: true
   register: result
 
-- debug: var=result
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result

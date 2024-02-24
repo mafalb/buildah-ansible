@@ -1,23 +1,34 @@
+---
 - name: BUILDAH | Create a buildah
-  buildah_from:
+  mafalb.buildah.buildah_from:
     name: fedora:latest
   register: __buildah
 
-- shell: |
-    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $1}'
-    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+- name: BUILDAH | Get Ids
+  ansible.builtin.shell: |
+    executable: /bin/bash
+    cmd: |
+      set -o pipefail
+      buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $1}'
+      buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+  changed_when: false
   register: __buildah_ls
 
 - name: BUILDAH | Test output of "buildah rm using container ID" command
-  buildah_rm:
+  mafalb.buildah.buildah_rm:
     name: "{{ __buildah_ls.stdout_lines[0] }}"
   register: result
 
-- debug: var=result
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result
 
 - name: BUILDAH | Test output of "buildah rm using all option" command
-  buildah_rm:
-    all: yes
+  mafalb.buildah.buildah_rm:
+    all: true
   register: result
 
-- debug: var=result
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result
+...

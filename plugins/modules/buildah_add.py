@@ -49,17 +49,15 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah add <image_name>" command
-    buildah_add:
-      name: 32282b25dcb9
-      src: HelloWorld.txt
-      dest: /tmp/HelloWorld.txt
-      chown: 'root:root'
-    register: result
+- name: BUILDAH | Test output of "buildah add <image_name>" command
+  buildah_add:
+    name: 32282b25dcb9
+    src: HelloWorld.txt
+    dest: /tmp/HelloWorld.txt
+    chown: 'root:root'
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_add ( module, name, chown, quiet, src, dest ):
 

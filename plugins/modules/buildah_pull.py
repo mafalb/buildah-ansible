@@ -50,14 +50,12 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test "buildah pull <image_name>" command
-    buildah_pull:
-      name: quay.io/ipbabble/myfedoratest
-    register: result
+- name: BUILDAH | Test "buildah pull <image_name>" command
+  buildah_pull:
+    name: quay.io/ipbabble/myfedoratest
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_pull ( module, name, authfile, cert_dir, creds, quiet, signature_policy, tls_verify ):
 

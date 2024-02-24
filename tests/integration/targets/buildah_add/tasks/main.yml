@@ -1,23 +1,29 @@
+---
 - name: BUILDAH | Create a buildah
-  buildah_from:
+  mafalb.buildah.buildah_from:
     name: fedora:latest
   register: __buildah
 
 - name: BUILDAH | Test output of "buildah add " command
-  buildah_add:
+  mafalb.buildah.buildah_add:
     name: "{{ __buildah.stdout | trim }}"
     src: targets/buildah_add/files/HelloWorld.txt
     dest: /tmp/HelloWorld.txt
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test output of "buildah add --quiet " command
-  buildah_add:
+  mafalb.buildah.buildah_add:
     name: "{{ __buildah.stdout | trim }}"
     src: targets/buildah_add/files/HelloWorld.txt
     dest: /tmp/HelloWorld.txt
-    quiet: yes
+    quiet: true
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
+...

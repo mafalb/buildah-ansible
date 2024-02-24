@@ -49,14 +49,12 @@ author:
 '''
 
 EXAMPLES = '''
+- name: BUILDAH | Test output of "buildah from <image_name>" command
+  buildah_add:
+    heading: false
+  register: result
 
-  - name: BUILDAH | Test output of "buildah from <image_name>" command
-    buildah_add:
-      heading: no
-    register: result
-
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 def buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_parent, cidfile, cni_config_dir, cni_plugin_path, cpu_period, cpu_quota, cpu_shares, cpuset_cpus, cpuset_mems, creds, ipc, isolation, memory, memory_swap, name, network, pid, pull, pull_always, quiet, security_options, shm_size, signature_policy, tls_verify, ulimit, userns, userns_uid_map, userns_gid_map, userns_uid_map_user, userns_gid_map_group, uts, volume ):
 

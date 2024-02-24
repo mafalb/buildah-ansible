@@ -50,21 +50,19 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah rmi <image_name>" command
-    buildah_rmi:
-      name: CONTAINER-ID-OR-NAME
-    register: result
+- name: BUILDAH | Test output of "buildah rmi <image_name>" command
+  buildah_rmi:
+    name: CONTAINER-ID-OR-NAME
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test output of "buildah rmi --all" command
-    buildah_rmi:
-      all: yes
-    register: result
+- name: BUILDAH | Test output of "buildah rmi --all" command
+  buildah_rmi:
+    all: true
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_rmi ( module, name, all, force, prune ):
 

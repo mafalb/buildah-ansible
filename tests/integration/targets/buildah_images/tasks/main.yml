@@ -1,26 +1,33 @@
+---
 - name: BUILDAH | Test output of "buildah images <image_name>" command
-  buildah_images:
+  mafalb.buildah.buildah_images:
     name: registry.fedoraproject.org/fedora
-    truncate: yes
+    truncate: true
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test JSON output of "buildah images --json <image_name>" command
-  buildah_images:
+  mafalb.buildah.buildah_images:
     name: registry.fedoraproject.org/fedora
-    json: yes
+    json: true
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test output of "buildah images --no-trunc <image_name>" command
-  buildah_images:
+  mafalb.buildah.buildah_images:
     name: registry.fedoraproject.org/fedora
-    truncate: no
+    truncate: false
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 # #######################  DOES NOT WORK YET ###################################
 #   - name: BUILDAH | Test output of "buildah images <FORMAT> <image_name>" command
@@ -37,25 +44,31 @@
 # #######################  DOES NOT WORK YET ###################################
 
 - name: BUILDAH | Test output of "buildah images --noheading <image_name>" command
-  buildah_images:
+  mafalb.buildah.buildah_images:
     name: registry.fedoraproject.org/fedora
-    heading: no
+    heading: false
   register: result
 
-- debug: var=result.stdout_lines
-
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test output of "buildah images --noheading <image_name>" command
-  buildah_images:
+  mafalb.buildah.buildah_images:
     name: registry.fedoraproject.org/fedora
-    heading: yes
+    heading: true
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test output of ALL "buildah images" command
-  buildah_images:
+  mafalb.buildah.buildah_images:
     name:    # Empty name: results in ALL images - REVISIT
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
+...

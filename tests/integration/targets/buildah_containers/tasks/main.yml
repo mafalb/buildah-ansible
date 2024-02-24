@@ -1,23 +1,30 @@
+---
 - name: BUILDAH | Test output of "buildah containers " command
-  buildah_containers:
-    truncate: yes
+  mafalb.buildah.buildah_containers:
+    truncate: true
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test JSON output of "buildah containers --json " command
-  buildah_containers:
-    json: yes
+  mafalb.buildah.buildah_containers:
+    json: true
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test output of "buildah containers --notruncate" command
-  buildah_containers:
-    truncate: no
+  mafalb.buildah.buildah_containers:
+    truncate: false
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 # #######################  DOES NOT WORK YET ###################################
 #   - name: BUILDAH | Test output of "buildah containers <FORMAT> " command
@@ -34,14 +41,19 @@
 # #######################  DOES NOT WORK YET ###################################
 
 - name: BUILDAH | Test output of "buildah containers --noheading " command
-  buildah_containers:
-    heading: no
+  mafalb.buildah.buildah_containers:
+    heading: false
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
 
 - name: BUILDAH | Test output of ALL "buildah containers" command
-  buildah_containers:
+  mafalb.buildah.buildah_containers:
   register: result
 
-- debug: var=result.stdout_lines
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
+...

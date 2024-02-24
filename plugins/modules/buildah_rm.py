@@ -51,21 +51,19 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah rm <image_name>" command
-    buildah_rm:
-      name: CONTAINER-ID-OR-NAME
-    register: result
+- name: BUILDAH | Test output of "buildah rm <image_name>" command
+  buildah_rm:
+    name: CONTAINER-ID-OR-NAME
+  register: result
 
-  - debug: var=result.stdout_lines
+- debug: var=result.stdout_lines
 
-  - name: BUILDAH | Test output of "buildah rm --all" command
-    buildah_rm:
-      all: yes
-    register: result
+- name: BUILDAH | Test output of "buildah rm --all" command
+  buildah_rm:
+    all: true
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_rm ( module, name, all ):
 

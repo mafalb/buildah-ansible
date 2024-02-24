@@ -55,14 +55,13 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah run <image_name> <command>" command
-    buildah_run:
-      name: CONTAINER-ID-OR-NAME
-      command: ls
-    register: result
+- name: BUILDAH | Test output of "buildah run <image_name> <command>" command
+  buildah_run:
+    name: CONTAINER-ID-OR-NAME
+    command: ls
+  register: result
 
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir, cni_plugin_path, hostname, ipc, isolation, network, pivot, pid, runtime, runtime_flag, security_options, user, uts, volume ):
 

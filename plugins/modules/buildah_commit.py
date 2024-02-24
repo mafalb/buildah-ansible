@@ -53,17 +53,15 @@ author:
 '''
 
 EXAMPLES = '''
+- name: BUILDAH | Test output of "buildah add --noheading <image_name>" command
+  buildah_commit:
+    container: fedora-working-container
+    imgname: docker://localhost:5000/fedora-claudiol
+    creds: username:password
+    heading: false
+  register: result
 
-  - name: BUILDAH | Test output of "buildah add --noheading <image_name>" command
-    buildah_commit:
-      container: fedora-working-container
-      imgname: docker://localhost:5000/fedora-claudiol
-      creds: username:password
-      heading: no
-    register: result
-
-  - debug: var=result.stdout_lines
-
+- debug: var=result.stdout_lines
 '''
 
 def buildah_commit(module, container, imgname, authfile, certdir,

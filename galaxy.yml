@@ -15,7 +15,7 @@ authors:
 description: Ansible collection for buildah
 
 license:
- - GPL-3.0-or-later
+  - GPL-3.0-or-later
 
 tags:
   - linux

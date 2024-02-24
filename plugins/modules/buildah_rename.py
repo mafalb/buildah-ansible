@@ -49,15 +49,13 @@ author:
 '''
 
 EXAMPLES = '''
-  - name: BUILDAH | Test output of "buildah add <image_name>" command
-    buildah_rename:
-      container_name: CONTAINER-NAME-OR-ID
-      new_container_name: NEW-CONTAINER-NAME
-    register: result
+- name: BUILDAH | Test output of "buildah add <image_name>" command
+  buildah_rename:
+    container_name: CONTAINER-NAME-OR-ID
+    new_container_name: NEW-CONTAINER-NAME
+  register: result
 
-  - debug: var=result.stdout_lines
-
-
+- debug: var=result.stdout_lines
 '''
 def buildah_rename ( module, container_name, new_container_name ):
 
