@@ -1,0 +1,35 @@
+# Copyright (c) 2024 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+---
+
+name: CI
+on:  # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      targeted_branch:
+        type: string
+
+jobs:
+
+  selectbranch:
+    uses: mafalb/workflows/.github/workflows/reusable-selectbranch.yml@prod
+    with:
+      targeted_branch: ${{ inputs.targeted_branch }}
+
+  ansiblecollection:
+    needs: selectbranch
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@prod
+    with:
+      targeted_branch: ${{ needs.selectbranch.outputs.ref }}
+      run_integration_as_root: true
+
+  allsuccess:
+    if: success() || failure()
+    uses: mafalb/workflows/.github/workflows/reusable-allsuccess.yml@prod
+    with:
+      joblist: ${{ toJSON(needs) }}
+    needs:
+      - selectbranch
+      - ansiblecollection
+...

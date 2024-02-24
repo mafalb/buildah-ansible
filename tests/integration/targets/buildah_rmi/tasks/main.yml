@@ -1,0 +1,32 @@
+# - name: BUILDAH | Test output of "buildah rmi using --prune" command
+#   buildah_rmi:
+#     prune: yes
+#   register: result
+#   tags:
+#     - prune
+
+# - debug: var=result
+
+- name: BUILDAH | Create a buildah
+  buildah_from:
+    name: fedora:latest
+  register: __buildah
+
+- shell: |
+    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+  register: __buildah_ls
+
+- name: BUILDAH | Test output of "buildah rmi using container ID" command
+  buildah_rmi:
+    name: "{{ __buildah_ls.stdout | trim }}"
+    force: yes
+  register: result
+
+- debug: var=result
+
+- name: BUILDAH | Test output of "buildah rm using all option" command
+  buildah_rmi:
+    all: yes
+  register: result
+
+- debug: var=result

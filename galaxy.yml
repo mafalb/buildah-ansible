@@ -1,0 +1,32 @@
+---
+
+# should become containers.buildah?
+namespace: mafalb
+name: buildah
+
+version: 0.0.1
+readme: README.md
+
+authors:
+  - Red Hat Consulting (NAPS)
+  - Lester Claudio
+  - Markus Falb <markus.falb@mafalb.at>
+
+description: Ansible collection for buildah
+
+license:
+ - GPL-3.0-or-later
+
+tags:
+  - linux
+  - containers
+  - buildah
+
+dependencies: {}
+
+repository: https://github.com/mafalb/buildah-ansible
+documentation: https://github.com/mafalb/buildah-ansible
+homepage: https://github.com/mafalb/buildah-ansible
+issues: https://github.com/mafalb/buildah-ansible/issues
+
+...

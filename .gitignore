@@ -1,3 +1,7 @@
 *.retry
-.cache
+/.cache/
 *~
+tests/integration/inventory
+tests/output/
+__pycache__/
+*.pyc

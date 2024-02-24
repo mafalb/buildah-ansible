@@ -1,0 +1,23 @@
+- name: BUILDAH | Create a buildah
+  buildah_from:
+    name: fedora:latest
+  register: __buildah
+
+- name: BUILDAH | Test output of "buildah add " command
+  buildah_add:
+    name: "{{ __buildah.stdout | trim }}"
+    src: targets/buildah_add/files/HelloWorld.txt
+    dest: /tmp/HelloWorld.txt
+  register: result
+
+- debug: var=result.stdout_lines
+
+- name: BUILDAH | Test output of "buildah add --quiet " command
+  buildah_add:
+    name: "{{ __buildah.stdout | trim }}"
+    src: targets/buildah_add/files/HelloWorld.txt
+    dest: /tmp/HelloWorld.txt
+    quiet: yes
+  register: result
+
+- debug: var=result.stdout_lines

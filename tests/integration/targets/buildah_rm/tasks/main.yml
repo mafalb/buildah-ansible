@@ -1,0 +1,23 @@
+- name: BUILDAH | Create a buildah
+  buildah_from:
+    name: fedora:latest
+  register: __buildah
+
+- shell: |
+    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $1}'
+    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+  register: __buildah_ls
+
+- name: BUILDAH | Test output of "buildah rm using container ID" command
+  buildah_rm:
+    name: "{{ __buildah_ls.stdout_lines[0] }}"
+  register: result
+
+- debug: var=result
+
+- name: BUILDAH | Test output of "buildah rm using all option" command
+  buildah_rm:
+    all: yes
+  register: result
+
+- debug: var=result

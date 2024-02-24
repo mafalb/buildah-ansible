@@ -1,0 +1,29 @@
+- name: BUILDAH | Create a buildah
+  buildah_from:
+    name: fedora:latest
+  register: __buildah
+
+- shell: |
+    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $1}'
+    buildah ls | grep "{{ __buildah.stdout | trim }}$" | awk '{print $3}'
+  register: __buildah_ls
+
+- debug:
+    var: __buildah_ls
+
+- name: BUILDAH | Test output of "buildah inspect <image_id>" command
+  buildah_inspect:
+    name: "{{ __buildah_ls.stdout_lines[1] }}"
+    type: image
+  register: result
+
+- debug: var=result.stdout_lines
+
+- name: BUILDAH | Test output of "buildah inspect <container_id>" command
+  buildah_inspect:
+    name: "{{ __buildah_ls.stdout_lines[0] }}"
+    type: container
+  register: result
+
+- debug: var=result.stdout_lines
+

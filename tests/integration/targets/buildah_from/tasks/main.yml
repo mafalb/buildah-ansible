@@ -1,0 +1,10 @@
+
+- debug:
+    msg: "hello"
+
+- name: BUILDAH | Test output of "buildah from " command
+  mafalb.buildah.buildah_from:
+    name: fedora
+  register: result
+
+- debug: var=result
