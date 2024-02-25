@@ -22,7 +22,7 @@ jobs:
     uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@f-molecule
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
-      run_integration_as_root: true
+      # run_integration_as_root: true
 
   allsuccess:
     if: success() || failure()
