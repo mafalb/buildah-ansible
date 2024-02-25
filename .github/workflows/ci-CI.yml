@@ -19,7 +19,7 @@ jobs:
 
   ansiblecollection:
     needs: selectbranch
-    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@prod
+    uses: mafalb/workflows/.github/workflows/reusable-ansiblecollection.yml@dev
     with:
       targeted_branch: ${{ needs.selectbranch.outputs.ref }}
       run_integration_as_root: true
