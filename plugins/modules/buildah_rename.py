@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,17 +35,25 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_rename
-version_added: historical
+version_added: 0.0.1
 short_description: Mount a working container's root filesystem
 description:
      - Mount a working container's root filesystem.
 options:
+  container_name:
+    description: containerID
+    type: str
+    required: true
+  new_container_name:
+    description: new name
+    type: str
+    required: true
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -57,7 +65,9 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_rename ( module, container_name, new_container_name ):
+
+
+def buildah_rename(module, container_name, new_container_name):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
@@ -77,11 +87,11 @@ def buildah_rename ( module, container_name, new_container_name ):
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             container_name=dict(required=True),
-            new_container_name=dict(required=False)
+            new_container_name=dict(required=True)
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -89,15 +99,15 @@ def main():
     container_name = params.get('container_name', '')
     new_container_name = params.get('new_container_name', '')
 
-    rc, out, err =  buildah_rename ( module, container_name, new_container_name )
+    rc, out, err = buildah_rename(module, container_name, new_container_name)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.fail_json(msg = err )
+        module.fail_json(msg=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

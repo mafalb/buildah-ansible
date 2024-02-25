@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,17 +35,25 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_mount
-version_added: historical
+version_added: 0.0.1
 short_description: Mount a working container's root filesystem
 description:
      - Mount a working container's root filesystem.
 options:
+  name:
+    description: containerID
+    type: str
+    required: true
+  truncate:
+    description: containerID
+    type: bool
+    default: false
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -56,13 +64,15 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_mount ( module, name, truncate ):
+
+
+def buildah_mount(module, name, truncate):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
         buildah_basecmd = [buildah_bin, 'mount']
 
-    if truncate != True:
+    if truncate is not True:
         r_cmd = ['--notruncate']
         buildah_basecmd.extend(r_cmd)
 
@@ -76,11 +86,11 @@ def buildah_mount ( module, name, truncate ):
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             name=dict(required=True),
             truncate=dict(required=False, default="no", type="bool")
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -88,15 +98,15 @@ def main():
     name = params.get('name', '')
     truncate = params.get('truncate', '')
 
-    rc, out, err =  buildah_mount(module, name, truncate)
+    rc, out, err = buildah_mount(module, name, truncate)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.exit_json(changed=False, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=False, rc=rc, stdout=out, err=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

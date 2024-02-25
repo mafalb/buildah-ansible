@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,17 +35,134 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_from
-version_added: historical
+version_added: 0.0.1
 short_description: Creates a new working container, either from scratch or using a specified image as a starting point.
-description:
-     -  Creates  a working container based upon the specified image name.  If the supplied image name is "scratch" a new empty container is created.  Image names use a "transport":"details" format.
+description: >
+     Creates  a working container based upon the specified image name.
+     If the supplied image name is "scratch" a new empty container is created.
+     Image names use a "transport":"details" format.
+
 options:
+  name:
+    description: imageName
+    type: str
+    required: true
+  host:
+    description: host
+    type: str
+  authfile:
+    description: path of the authentication file.
+    type: str
+    default: ""
+  cap_add:
+    description: add the specified capability when running
+    type: str
+  cap_drop:
+    description: drop the specified capability when running
+    type: str
+  cert_dir:
+    description: use certificates at the specified path to access the registry
+    type: path
+  cgroup_parent:
+    description: optional parent cgroup for the container
+    type: str
+  cidfile:
+    description: write the container ID to the file
+    type: str
+  cni_config_dir:
+    description: cni_config_dir
+    type: str
+  cni_plugin_path:
+    description: cni_plugin_path
+    type: path
+  cpu_period:
+    description: limit the CPU CFS (Completely Fair Scheduler) period
+    type: int
+  cpu_quota:
+    description: limit the CPU CFS (Completely Fair Scheduler) quota
+    type: int
+  cpu_shares:
+    description: CPU shares (relative weight)
+    type: int
+  cpuset_cpus:
+    description: CPUs in which to allow execution (0-3, 0,1)
+    type: str
+  cpuset_mems:
+    description: memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems.
+    type: str
+  creds:
+    description: use [username[:password]] for accessing the registry
+    type: str
+  ipc:
+    description: private', path of IPC namespace to join, or 'host'
+    type: str
+  isolation:
+    description: type of process isolation to use.
+    type: str
+  memory:
+    description: memory limit
+    type: str
+  memory_swap:
+    description: swap limit
+    type: str
+  net:
+    description: "'private', 'none', 'ns:path' of network namespace to join, or 'host'"
+    type: str
+  pid:
+    description: private, path of PID namespace to join, or 'host'
+    type: str
+  pull:
+    description: pull the image from the registry if newer or not present
+    type: str
+  pull_always:
+    description: pull the image even if the named image is present in store
+    type: str
+  quiet:
+    description: don't output progress information when pulling images
+    type: bool
+    default: false
+  security_options:
+    description: security options
+    type: str
+  shm_size:
+    description: size of '/dev/shm'
+    type: str
+  signature_policy:
+    description: signature policy
+    type: str
+  tls_verify:
+    description: require HTTPS and verify certificates when accessing the registry
+    type: str
+  ulimit:
+    description: ulimit options
+    type: str  # FIX, should be list of strings?
+  userns:
+    description: "'container', path of user namespace to join, or 'host'"
+    type: str
+  userns_uid_map:
+    description: containerUID:hostUID:length UID mapping to use in user namespace
+    type: str
+  userns_gid_map:
+    description: containerGID:hostGID:length GID mapping to use in user namespace
+    type: str
+  userns_uid_map_user:
+    description: name of entries from /etc/subuid to use to set user namespace UID mapping
+    type: str
+  userns_gid_map_group:
+    description: name of entries from /etc/subgid to use to set user namespace GID mapping
+    type: str
+  uts:
+    description: private, :path of UTS namespace to join, or 'host'
+    type: str
+  volume:
+    description: bind mount a volume into the container
+    type: str
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -56,7 +173,14 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_parent, cidfile, cni_config_dir, cni_plugin_path, cpu_period, cpu_quota, cpu_shares, cpuset_cpus, cpuset_mems, creds, ipc, isolation, memory, memory_swap, name, network, pid, pull, pull_always, quiet, security_options, shm_size, signature_policy, tls_verify, ulimit, userns, userns_uid_map, userns_gid_map, userns_uid_map_user, userns_gid_map_group, uts, volume ):
+
+
+def buildah_from(module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_parent,
+                 cidfile, cni_config_dir, cni_plugin_path, cpu_period, cpu_quota,
+                 cpu_shares, cpuset_cpus, cpuset_mems, creds, ipc, isolation, memory,
+                 memory_swap, name, network, pid, pull, pull_always, quiet, security_options,
+                 shm_size, signature_policy, tls_verify, ulimit, userns, userns_uid_map,
+                 userns_gid_map, userns_uid_map_user, userns_gid_map_group, uts, volume):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
@@ -74,14 +198,14 @@ def buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_p
         r_cmd = [authfile]
         buildah_basecmd.extend(r_cmd)
 
-    ## REVISIT - Multiple Entries
+    # REVISIT - Multiple Entries
     if cap_add:
         r_cmd = ['--cap_add']
         buildah_basecmd.extend(r_cmd)
         r_cmd = [cap_add]
         buildah_basecmd.extend(r_cmd)
 
-    ## REVISIT - Multiple Entries
+    # REVISIT - Multiple Entries
     if cap_drop:
         r_cmd = ['--cap_drop']
         buildah_basecmd.extend(r_cmd)
@@ -284,17 +408,17 @@ def buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_p
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             name=dict(required=True),
             host=dict(required=False),
             authfile=dict(required=False, default=""),
             cap_add=dict(required=False),
             cap_drop=dict(required=False),
-            cert_dir=dict(required=False),
+            cert_dir=dict(required=False, type='path'),
             cgroup_parent=dict(required=False),
             cidfile=dict(required=False),
             cni_config_dir=dict(required=False),
-            cni_plugin_path=dict(required=False),
+            cni_plugin_path=dict(required=False, type='path'),
             cpu_period=dict(required=False, type="int"),
             cpu_quota=dict(required=False, type="int"),
             cpu_shares=dict(required=False, type="int"),
@@ -309,7 +433,7 @@ def main():
             pid=dict(required=False),
             pull=dict(required=False),
             pull_always=dict(required=False),
-            quiet=dict(required=False, default="no", type="bool"),
+            quiet=dict(required=False, default=False, type='bool'),
             security_options=dict(required=False),
             shm_size=dict(required=False),
             signature_policy=dict(required=False),
@@ -323,7 +447,7 @@ def main():
             uts=dict(required=False),
             volume=dict(required=False)
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -352,7 +476,7 @@ def main():
     pid = params.get('pid', '')
     pull = params.get('pull', '')
     pull_always = params.get('pull_always', '')
-    quiet = params.get('quiet', '')
+    quiet = params.get('quiet', False)
     security_options = params.get('security_options', '')
     shm_size = params.get('shm_size', '')
     signature_policy = params.get('signature_policy', '')
@@ -366,16 +490,21 @@ def main():
     uts = params.get('uts', '')
     volume = params.get('volume', '')
 
-
-    rc, out, err =  buildah_from ( module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_parent, cidfile, cni_config_dir, cni_plugin_path, cpu_period, cpu_quota, cpu_shares, cpuset_cpus, cpuset_mems, creds, ipc, isolation, memory, memory_swap, name, network, pid, pull, pull_always, quiet, security_options, shm_size, signature_policy, tls_verify, ulimit, userns, userns_uid_map, userns_gid_map, userns_uid_map_user, userns_gid_map_group, uts, volume )
+    rc, out, err = buildah_from(
+        module, host, authfile, cap_add, cap_drop, cert_dir, cgroup_parent, cidfile,
+        cni_config_dir, cni_plugin_path, cpu_period, cpu_quota, cpu_shares, cpuset_cpus,
+        cpuset_mems, creds, ipc, isolation, memory, memory_swap, name, network, pid,
+        pull, pull_always, quiet, security_options, shm_size, signature_policy,
+        tls_verify, ulimit, userns, userns_uid_map, userns_gid_map, userns_uid_map_user,
+        userns_gid_map_group, uts, volume)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
         module.fail_json(msg=err)
 
+
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

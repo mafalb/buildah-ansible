@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,7 +35,7 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_run
-version_added: historical
+version_added: 0.0.1
 short_description: Runs a specified command using the container's root
                    filesystem as a root filesystem, using configuration
                    settings inherited from the container's image or as
@@ -46,12 +46,67 @@ description:
      - Runs a specified command using the container's root filesystem
 
 options:
+  name:
+    description: containerID
+    required: true
+    type: str
+  command:
+    description: command
+    required: true
+    type: str
+  args:
+    description: command arguments
+    type: list
+    elements: str
+  cap_add:
+    description: add the specified capability
+    type: str
+  cap_drop:
+    description: drop the specified capability
+    type: str
+  cni_config_dir:
+    description: cni_config_dir
+    type: path
+  cni_plugin_path:
+    description: cni_plugin_path
+    type: path
+  ipc:
+    description: path of IPC namespace to join
+    type: str
+  isolation:
+    description: type of process isolation to use
+    type: str
+  net:
+    description: network
+    type: str
+  pivot:
+    description: pivot
+    type: bool
+    default: false
+  pid:
+    description: pid
+    type: str
+  runtime:
+    description: path to an alternate OCI runtime
+    type: str
+  runtime_flag:
+    description: add global flags for the container runtime
+    type: str
+  user:
+    description: user[:group] to run the command as
+    type: str
+  uts:
+    description: private, :path of UTS namespace to join, or 'host'
+    type: str
+  volume:
+    description: bind mount a host location into the container while running the command
+    type: str
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -63,24 +118,28 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir, cni_plugin_path, hostname, ipc, isolation, network, pivot, pid, runtime, runtime_flag, security_options, user, uts, volume ):
+
+
+def buildah_run(module, name, command, args, cap_add, cap_drop, cni_config_dir,
+                cni_plugin_path, hostname, ipc, isolation, network, pivot, pid,
+                runtime, runtime_flag, security_options, user, uts, volume):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
         buildah_basecmd = [buildah_bin, 'run']
 
-    ## REVISIT - Multiple Entries
+    # REVISIT - Multiple Entries
     if cap_add:
         r_cmd = ['--cap_add']
         buildah_basecmd.extend(r_cmd)
         r_cmd = [cap_add]
         buildah_basecmd.extend(r_cmd)
 
-    ## REVISIT - Multiple Entries
+    # REVISIT - Multiple Entries
     if cap_drop:
         r_cmd = ['--cap_drop']
         buildah_basecmd.extend(r_cmd)
-        r_cmd = [host]
+        r_cmd = [cap_drop]
         buildah_basecmd.extend(r_cmd)
 
     if cni_config_dir:
@@ -100,7 +159,6 @@ def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir
         buildah_basecmd.extend(r_cmd)
         r_cmd = [hostname]
         buildah_basecmd.extend(r_cmd)
-
 
     if ipc:
         r_cmd = ['--ipc']
@@ -166,7 +224,6 @@ def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir
         r_cmd = [volume]
         buildah_basecmd.extend(r_cmd)
 
-
     if name:
         r_cmd = [name]
         buildah_basecmd.extend(r_cmd)
@@ -184,21 +241,20 @@ def buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir
                 r_cmd = [arg]
                 buildah_basecmd.extend(r_cmd)
 
-
     return module.run_command(buildah_basecmd)
 
 
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             name=dict(required=True),
             command=dict(required=True),
-            args = dict(required=False, type='list'),
+            args=dict(required=False, type='list', elements='str'),
             cap_add=dict(required=False),
             cap_drop=dict(required=False),
-            cni_config_dir=dict(required=False),
-            cni_plugin_path=dict(required=False),
+            cni_config_dir=dict(type='path', required=False),
+            cni_plugin_path=dict(type='path', required=False),
             ipc=dict(required=False),
             isolation=dict(required=False),
             net=dict(required=False),
@@ -206,12 +262,11 @@ def main():
             pid=dict(required=False),
             runtime=dict(required=False),
             runtime_flag=dict(required=False),
-            security_options=dict(required=False),
             user=dict(required=False),
             uts=dict(required=False),
             volume=dict(required=False)
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -236,16 +291,18 @@ def main():
     uts = params.get('uts', '')
     volume = params.get('volume', '')
 
-
-    rc, out, err =  buildah_run ( module, name, command, args, cap_add, cap_drop, cni_config_dir, cni_plugin_path, hostname, ipc, isolation, network, pivot, pid, runtime, runtime_flag, security_options, user, uts, volume )
+    rc, out, err = buildah_run(
+        module, name, command, args, cap_add, cap_drop, cni_config_dir,
+        cni_plugin_path, hostname, ipc, isolation, network, pivot, pid,
+        runtime, runtime_flag, security_options, user, uts, volume)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.fail_json(msg = err )
+        module.fail_json(msg=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

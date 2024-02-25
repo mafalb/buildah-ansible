@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2019, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,18 +35,40 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_containers
-version_added: historical
+version_added: 0.0.1
 short_description: buildah-containers - List the working containers and their base images.
 description:
      - Lists  containers  which  appear to be Buildah working containers, their names and IDs, and
        the names and IDs of the images from which they were initialized.
 options:
+  json:
+    description: output in JSON format
+    type: bool
+    default: false
+  truncate:
+    description: truncate
+    type: bool
+    default: true
+  quiet:
+    description: display only container IDs
+    type: bool
+    default: false
+  format:
+    description: pretty-print containers using a Go template
+    type: str
+  filter:
+    description: filter output based on conditions provided
+    type: str
+  heading:
+    description: do print column headings
+    type: bool
+    default: true
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -78,7 +100,9 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_list_containers ( module, json, truncate, quiet, format, filter, heading ):
+
+
+def buildah_list_containers(module, json, truncate, quiet, format, filter, heading):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
@@ -88,7 +112,7 @@ def buildah_list_containers ( module, json, truncate, quiet, format, filter, hea
         r_cmd = ['--json']
         buildah_basecmd.extend(r_cmd)
 
-    if truncate != True:
+    if truncate is not True:
         r_cmd = ['--notruncate']
         buildah_basecmd.extend(r_cmd)
 
@@ -118,15 +142,15 @@ def buildah_list_containers ( module, json, truncate, quiet, format, filter, hea
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             json=dict(required=False, default="no", type='bool'),
             truncate=dict(required=False, default="yes", type='bool'),
             quiet=dict(required=False, default="no", type='bool'),
             format=dict(required=False, default=""),
             filter=dict(required=False, default=""),
-            heading=dict(required=False, default="yes")
+            heading=dict(required=False, type='bool', default=True)
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -138,15 +162,15 @@ def main():
     filter = params.get('filter', '')
     heading = params.get('heading', '')
 
-    rc, out, err =  buildah_list_containers(module, json, truncate, quiet, format, filter, heading)
+    rc, out, err = buildah_list_containers(module, json, truncate, quiet, format, filter, heading)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.exit_json(changed=False, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=False, rc=rc, stdout=out, err=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

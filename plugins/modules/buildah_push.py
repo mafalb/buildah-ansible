@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,18 +35,42 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_push
-version_added: historical
+version_added: 0.0.1
 short_description: Pushes an image from local storage to a specified destination, decompressing and recompessing layers as needed.
 description:
      - Pushes an image from local storage to a specified destination, decompressing and recompessing layers as needed.
 
 options:
+  name:
+    description: imageID
+    type: str
+    required: true
+  dest:
+    description: destination
+    type: str
+  authfile:
+    description: path of the authentication file
+    type: path
+  cert_dir:
+    description: use certificates at the specified path to access the registry
+    type: path
+  creds:
+    description: use [username[:password]] for accessing the registry
+    type: str
+  quiet:
+    description: don't output progress information when pushing images
+    type: bool
+    default: false
+  tls_verify:
+    description: require HTTPS and verify certificates when accessing the registry
+    type: bool
+    default: false
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+  - Red Hat Consulting (NAPS) (!UNKNOWN)
+  - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -58,7 +82,9 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_push ( module, name, dest, authfile, cert_dir, creds, quiet, signature_policy, tls_verify ):
+
+
+def buildah_push(module, name, dest, authfile, cert_dir, creds, quiet, signature_policy, tls_verify):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
@@ -110,17 +136,16 @@ def buildah_push ( module, name, dest, authfile, cert_dir, creds, quiet, signatu
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             name=dict(required=True),
             dest=dict(required=False),
-            authfile=dict(required=False),
-            cert_dir=dict(required=False),
+            authfile=dict(required=False, type='path'),
+            cert_dir=dict(required=False, type='path'),
             creds=dict(required=False),
             quiet=dict(required=False, default="no", type="bool"),
-            signature_policy=dict(required=False),
             tls_verify=dict(required=False, default="no", type="bool")
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -131,18 +156,18 @@ def main():
     cert_dir = params.get('cert_dir', '')
     creds = params.get('creds', '')
     quiet = params.get('creds', '')
-    signature_policy  = params.get('signature_policy', '')
+    signature_policy = params.get('signature_policy', '')
     tls_verify = params.get('tls_verify', '')
 
-    rc, out, err =  buildah_push ( module, name, dest, authfile, cert_dir, creds, quiet, signature_policy, tls_verify )
+    rc, out, err = buildah_push(module, name, dest, authfile, cert_dir, creds, quiet, signature_policy, tls_verify)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.fail_json(msg = err )
+        module.fail_json(msg=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

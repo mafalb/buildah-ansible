@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -34,20 +34,112 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 
 DOCUMENTATION = '''
 ---
-module: buildah_cofig
-version_added: historical
+module: buildah_config
+version_added: 0.0.1
 short_description: Updates one or more of the settings kept for a container.
 
 description:
      - Updates one or more of the settings kept for a container.
 
 options:
+  name:
+    description: containerID
+    required: true
+    type: str
+  annotation:
+    description: add annotation e.g. annotation=value, for the target image
+    default: ""
+    type: str
+  arch:
+    description: set architecture of the target image
+    default: ""
+    type: str
+  author:
+    description: set image author contact information
+    default: ""
+    type: str
+  cmd:
+    description: set the default command to run for containers based on the image
+    default: ""
+    type: str
+  comment:
+    description: set a comment in the target image
+    default: ""
+    type: str
+  created_by:
+    description: set description of how the image was created
+    default: ""
+    type: str
+  domain:
+    description: set a domain name for containers based on image
+    default: ""
+    type: str
+  entrypoint:
+    description: set entry point for containers based on image
+    default: ""
+    type: str
+  env:
+    description: add environment variable to be set when running containers based on image
+    default: ""
+    type: str
+  healthcheck:
+    description: set a healthcheck command for the target image
+    default: 'NONE'
+    type: str
+  healthcheck_interval:
+    description: set the interval between runs of the `healthcheck` command for the target image
+    type: int
+  healthcheck_retries:
+    description: set the number of times the `healthcheck` command has to fail
+    type: int
+  healthcheck_start_period:
+    description: set the amount of time to wait after starting a container before a failed `healthcheck` command will count as a failure
+    type: int
+  healthcheck_timeout:
+    description: set the maximum amount of time to wait for a `healthcheck` command for the target image
+    type: int
+  history_comment:
+    description: set a comment for the history of the target image
+    default: ""
+    type: str
+  hostname:
+    description: set a hostname for containers based on image
+    default: ""
+    type: str
+  label:
+    description: add image configuration label e.g. label=value
+    default: ""
+    type: str
+  onbuild:
+    description: add onbuild command to be run on images based on this image. Only supported on 'docker' formatted images
+    type: str
+  os:
+    description: set operating system of the target image
+    type: str
+  port:
+    description: add port to expose when running containers based on image
+    type: str
+  shell:
+    description: add shell to run in containers
+    type: str
+  stop_signal:
+    description: set stop signal for containers based on image
+    type: str
+  user:
+    description: set default user to run inside containers based on image
+    type: str
+  volume:
+    description: add default volume path to be created for containers based on image
+    type: str
+  workingdir:
+    description: set working directory for containers based on image
+    type: path
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -58,7 +150,9 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_config ( module, name, annotation, arch, author, cmd,
+
+
+def buildah_config(module, name, annotation, arch, author, cmd,
                    comment, created_by, domain, entrypoint,
                    env, healthcheck, healthcheck_interval,
                    healthcheck_retries, healthcheck_start_period,
@@ -172,7 +266,7 @@ def buildah_config ( module, name, annotation, arch, author, cmd,
         r_cmd = [label]
         buildah_basecmd.extend(r_cmd)
 
-    ## REVISIT
+    # REVISIT
     if onbuild:
         r_cmd = ['--onbuild']
         buildah_basecmd.extend(r_cmd)
@@ -225,14 +319,13 @@ def buildah_config ( module, name, annotation, arch, author, cmd,
         r_cmd = [name]
         buildah_basecmd.extend(r_cmd)
 
-
     return module.run_command(buildah_basecmd)
 
 
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             name=dict(required=True),
             annotation=dict(required=False, default=""),
             arch=dict(required=False, default=""),
@@ -256,11 +349,11 @@ def main():
             port=dict(required=False),
             shell=dict(required=False),
             stop_signal=dict(required=False),
-            user=dict(rquired=False),
+            user=dict(required=False),
             volume=dict(required=False),
-            workingdir=dict(required=False)
+            workingdir=dict(required=False, type='path')
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -276,39 +369,38 @@ def main():
     entrypoint = params.get('entrypoint', '')
     env = params.get('env', '')
     healthcheck = params.get('env', '')
-    healthcheck_interval=params.get('heathcheck_interval', '')
-    healthcheck_retries=params.get('healthecheck_retries', '')
-    healthcheck_start_period=params.get('healcheck_start_period','')
-    healthcheck_timeout=params.get('healthcheck_timeout','')
-    history_comment=params.get('history_comment', '')
-    hostname=params.get('hostname','')
-    label=params.get('label', '')
-    onbuild=params.get('onbuild','')
-    os=params.get('os', '')
-    port=params.get('port', '')
-    shell=params.get('shell', '')
-    stop_signal=params.get('stop_signal', '')
-    user=params.get('user','')
-    volume=params.get('volume', '')
-    workingdir=params.get('workingdir', '')
+    healthcheck_interval = params.get('heathcheck_interval', '')
+    healthcheck_retries = params.get('healthecheck_retries', '')
+    healthcheck_start_period = params.get('healcheck_start_period', '')
+    healthcheck_timeout = params.get('healthcheck_timeout', '')
+    history_comment = params.get('history_comment', '')
+    hostname = params.get('hostname', '')
+    label = params.get('label', '')
+    onbuild = params.get('onbuild', '')
+    os = params.get('os', '')
+    port = params.get('port', '')
+    shell = params.get('shell', '')
+    stop_signal = params.get('stop_signal', '')
+    user = params.get('user', '')
+    volume = params.get('volume', '')
+    workingdir = params.get('workingdir', '')
 
-
-
-    rc, out, err =  buildah_config(module, name, annotation, arch, author, cmd,
-                                   comment, created_by, domain, entrypoint,
-                                   env, healthcheck, healthcheck_interval,
-                                   healthcheck_retries, healthcheck_start_period,
-                                   healthcheck_timeout, history_comment,
-                                   hostname, label, onbuild, os, port, shell,
-                                   stop_signal, user, volume, workingdir)
+    rc, out, err = buildah_config(module, name, annotation, arch, author, cmd,
+                                  comment, created_by, domain, entrypoint,
+                                  env, healthcheck, healthcheck_interval,
+                                  healthcheck_retries, healthcheck_start_period,
+                                  healthcheck_timeout, history_comment,
+                                  hostname, label, onbuild, os, port, shell,
+                                  stop_signal, user, volume, workingdir)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.exit_json(changed=False, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=False, rc=rc, stdout=out, err=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
+# from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()

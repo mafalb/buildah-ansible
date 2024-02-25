@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -34,19 +34,45 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 
 DOCUMENTATION = '''
 ---
-module: buildah
-version_added: historical
+module: buildah_images
+version_added: 0.0.1
 short_description: Allows the creation of Open Container Initiative (OCI) containers using the buildah command
 description:
      - Creates, removes, and lists OCI containers using the buildah container manager.
 options:
-
+  name:
+    description: imageName
+    type: str
+  json:
+    description: output in JSON format
+    type: bool
+    default: false
+  truncate:
+    description: do or do not truncate output
+    type: bool
+    default: true
+  digests:
+    description: show digests
+    type: bool
+    default: false
+  format:
+    description: pretty-print images using a Go template
+    type: str
+    default: ""
+  filter:
+    description: filter output based on conditions provided
+    type: str
+    default: ""
+  heading:
+    description: do not print column headings
+    type: bool
+    default: true
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+    - Red Hat Consulting (NAPS) (!UNKNOWN)
+    - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -82,7 +108,9 @@ EXAMPLES = '''
 
 - debug: var=result.stdout_lines
 '''
-def buildah_list_images ( module, name, json, truncate, digests, format, filter, heading ):
+
+
+def buildah_list_images(module, name, json, truncate, digests, format, filter, heading):
 
     if module.get_bin_path('buildah'):
         buildah_bin = module.get_bin_path('buildah')
@@ -92,7 +120,7 @@ def buildah_list_images ( module, name, json, truncate, digests, format, filter,
         r_cmd = ['--json']
         buildah_basecmd.extend(r_cmd)
 
-    if truncate != True:
+    if truncate is not True:
         r_cmd = ['--no-trunc']
         buildah_basecmd.extend(r_cmd)
 
@@ -114,25 +142,24 @@ def buildah_list_images ( module, name, json, truncate, digests, format, filter,
         r_cmd = [name]
         buildah_basecmd.extend(r_cmd)
 
-
     return module.run_command(buildah_basecmd)
 
 
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
-            name=dict(required=True),
-            json=dict(required=False, default="no", type='bool'),
-            truncate=dict(required=False, default="yes", type='bool'),
-            digests=dict(required=False, default="no", type='bool'),
+        argument_spec=dict(
+            name=dict(required=False),
+            json=dict(required=False, default=False, type='bool'),
+            truncate=dict(required=False, default=True, type='bool'),
+            digests=dict(required=False, default=False, type='bool'),
             format=dict(required=False, default=""),
             filter=dict(required=False, default=""),
-            heading=dict(required=False, default="yes")
+            heading=dict(required=False, default=True, type='bool')
         ),
-        required_one_of = [['name','str']],
-        mutually_exclusive = [['name','str']],
-        supports_check_mode = True
+        # required_one_of=[['name', 'str']],
+        # mutually_exclusive=[['name', 'str']],
+        supports_check_mode=True
     )
 
     params = module.params
@@ -145,15 +172,15 @@ def main():
     filter = params.get('filter', '')
     heading = params.get('heading', '')
 
-    rc, out, err =  buildah_list_images(module, id, json, truncate, digests, format, filter, heading)
+    rc, out, err = buildah_list_images(module, id, json, truncate, digests, format, filter, heading)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.exit_json(changed=False, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=False, rc=rc, stdout=out, err=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
 if __name__ == '__main__':
     main()

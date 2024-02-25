@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
-#!/usr/bin/python -tt
 # -*- coding: utf-8 -*-
+
 # (c) 2012, Red Hat, Inc
 # Based on yum module written by Seth Vidal <skvidal at fedoraproject.org>
 # (c) 2014, Epic Games, Inc.
@@ -21,12 +20,13 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 import os
 import platform
 import tempfile
 import shutil
-
-
 
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
@@ -35,21 +35,74 @@ ANSIBLE_METADATA = {'status': ['stableinterface'],
 DOCUMENTATION = '''
 ---
 module: buildah_commit
-version_added: historical
-short_description:   buildah-commit - Create an image from a working container.
+version_added: 0.0.1
+short_description:  buildah-commit - Create an image from a working container.
 
-description:
-   buildah-commit - Create an image from a working container. Writes  a  new image using the specified container's read-write layer and if it is based on an image, the layers of that image.  If image does not begin with a registry name component, localhost will be added to the name.
-
+description: >
+  Create an image from a working container. Writes a new image using the specified
+  container's read-write layer and if it is based on an image, the layers of that
+  image. If image does not begin with a registry name component, localhost will be
+  added to the name.
 
 options:
+  container:
+    description: container ID
+    type: str
+    required: true
+  imgname:
+    description: newImageName
+    type: str
+    required: true
+  authfile:
+    description: path of the authentication file.
+    type: path
+    required: false
+  certdir:
+    description: use certificates at the specified path to access the registry.
+    type: path
+    required: false
+  creds:
+    description: use [username[:password]] for accessing the registry.
+    type: str
+    required: false
+  compression:
+    description: use compression.
+    type: bool
+    default: false
+  format:
+    description: format of the image manifest and metadata (default "oci")
+    type: str
+    default: oci
+    choices:
+      - oci
+      - docker
+  iidfile:
+    description: write the image ID to the file
+    type: path
+    required: false
+  quiet:
+    description: don't output progress information when writing images
+    type: bool
+    default: false
+  rm:
+    description: remove the container and its content after committing it to an image.
+    type: bool
+    default: false
+  squash:
+    description: produce an image with only one layer.
+    type: bool
+    default: false
+  tls_verify:
+    description: require HTTPS and verify certificates when accessing the registry.
+    type: bool
+    default: false
 
 # informational: requirements for nodes
 requirements: [ buildah ]
 
 author:
-    - "Red Hat Consulting (NAPS)"
-    - "Lester Claudio"
+  - Red Hat Consulting (NAPS) (!UNKNOWN)
+  - Lester Claudio (@claudiol)
 '''
 
 EXAMPLES = '''
@@ -64,8 +117,9 @@ EXAMPLES = '''
 - debug: var=result.stdout_lines
 '''
 
+
 def buildah_commit(module, container, imgname, authfile, certdir,
-                   creds, compression, format, iidfile, quiet, rm, signature_policy,
+                   creds, compression, format, iidfile, quiet, rm,
                    squash, tls_verify):
 
     if module.get_bin_path('buildah'):
@@ -75,7 +129,7 @@ def buildah_commit(module, container, imgname, authfile, certdir,
     if authfile:
         r_cmd = ['--authfile']
         buildah_basecmd.extend(r_cmd)
-        r_cmd = [autfile]
+        r_cmd = [authfile]
         buildah_basecmd.extend(r_cmd)
 
     if certdir:
@@ -114,7 +168,6 @@ def buildah_commit(module, container, imgname, authfile, certdir,
         r_cmd = ['--rm']
         buildah_basecmd.extend(r_cmd)
 
-
     if container:
         r_cmd = [container]
         buildah_basecmd.extend(r_cmd)
@@ -129,22 +182,21 @@ def buildah_commit(module, container, imgname, authfile, certdir,
 def main():
 
     module = AnsibleModule(
-        argument_spec = dict(
+        argument_spec=dict(
             container=dict(required=True),
             imgname=dict(required=True),
-            authfile=dict(required=False, default=''),
-            certdir=dict(required=False, default=''),
+            authfile=dict(required=False, type='path', default=''),
+            certdir=dict(required=False, type='path', default=''),
             creds=dict(required=False, default=''),
             compression=dict(required=False, default='no', type='bool'),
             format=dict(required=False, default='oci', choices=['oci', 'docker']),
-            iidfile=dict(required=False, default=""),
+            iidfile=dict(required=False, type='path', default=""),
             quiet=dict(required=False, default="no", type="bool"),
             rm=dict(required=False, default="no", type="bool"),
-            signature_policy=dict(required=False, default=""),
             squash=dict(required=False, default="no", type="bool"),
             tls_verify=dict(required=False, default="no", type="bool")
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     params = module.params
@@ -163,17 +215,18 @@ def main():
     squash = params.get('squash', '')
     tls_verify = params.get('tls_verify', '')
 
-    rc, out, err =  buildah_commit(module, container, imgname, authfile, certdir, creds,
-                                   compression, format, iidfile, quiet, rm, signature_policy,
-                                   squash, tls_verify)
+    rc, out, err = buildah_commit(module, container, imgname, authfile, certdir, creds,
+                                  compression, format, iidfile, quiet, rm, signature_policy,
+                                  squash, tls_verify)
 
     if rc == 0:
-        module.exit_json(changed=True, rc=rc, stdout=out, err = err )
+        module.exit_json(changed=True, rc=rc, stdout=out, err=err)
     else:
-        module.fail_json(msg=err) ##changed=False, rc=rc, stdout=out, err = err )
+        module.fail_json(msg=err)  # changed=False, rc=rc, stdout=out, err=err)
+
 
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.urls import *
+from ansible.module_utils.basic import AnsibleModule
+# from ansible.module_utils.urls import *
 if __name__ == '__main__':
     main()
