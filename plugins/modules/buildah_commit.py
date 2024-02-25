@@ -23,11 +23,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import os
-import platform
-import tempfile
-import shutil
-
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
                     'version': '1.0'}
@@ -185,12 +180,12 @@ def main():
         argument_spec=dict(
             container=dict(required=True),
             imgname=dict(required=True),
-            authfile=dict(required=False, type='path', default=''),
-            certdir=dict(required=False, type='path', default=''),
-            creds=dict(required=False, default=''),
+            authfile=dict(required=False, type='path'),
+            certdir=dict(required=False, type='path'),
+            creds=dict(required=False),
             compression=dict(required=False, default='no', type='bool'),
             format=dict(required=False, default='oci', choices=['oci', 'docker']),
-            iidfile=dict(required=False, type='path', default=""),
+            iidfile=dict(required=False, type='path'),
             quiet=dict(required=False, default="no", type="bool"),
             rm=dict(required=False, default="no", type="bool"),
             squash=dict(required=False, default="no", type="bool"),

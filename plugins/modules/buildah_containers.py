@@ -23,11 +23,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import os
-import platform
-import tempfile
-import shutil
-
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
                     'version': '1.0'}
@@ -146,8 +141,8 @@ def main():
             json=dict(required=False, default="no", type='bool'),
             truncate=dict(required=False, default="yes", type='bool'),
             quiet=dict(required=False, default="no", type='bool'),
-            format=dict(required=False, default=""),
-            filter=dict(required=False, default=""),
+            format=dict(required=False),
+            filter=dict(required=False),
             heading=dict(required=False, type='bool', default=True)
         ),
         supports_check_mode=True

@@ -23,11 +23,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import os
-import platform
-import tempfile
-import shutil
-
 ANSIBLE_METADATA = {'status': ['stableinterface'],
                     'supported_by': 'core',
                     'version': '1.0'}
@@ -118,7 +113,7 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             name=dict(required=True),
-            chown=dict(required=False, default=""),
+            chown=dict(required=False),
             quiet=dict(required=False, default=False, type="bool"),
             src=dict(required=True),
             dest=dict(required=True)
