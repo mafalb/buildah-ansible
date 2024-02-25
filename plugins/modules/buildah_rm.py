@@ -95,10 +95,12 @@ def main():
 
     module = AnsibleModule(
         argument_spec=dict(
-            name=dict(required=True),
+            name=dict(required=False),
             all=dict(required=False, default="no", type="bool")
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
+        mutually_exclusive=[['name', 'all']],
+        required_one_of=[['name', 'all']],
     )
 
     params = module.params

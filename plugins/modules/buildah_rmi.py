@@ -111,11 +111,13 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             name=dict(required=False),
-            all=dict(required=False, default="no", type="bool"),
-            prune=dict(required=False, default="no", type="bool"),
-            force=dict(required=False, default="no", type="bool"),
+            all=dict(required=False, default=False, type="bool"),
+            prune=dict(required=False, default=False, type="bool"),
+            force=dict(required=False, default=False, type="bool"),
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
+        mutually_exclusive=[['name', 'all']],
+        required_one_of=[['name', 'all']],
     )
 
     params = module.params

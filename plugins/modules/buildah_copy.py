@@ -72,26 +72,26 @@ author:
 EXAMPLES = '''
 - name: BUILDAH | Test output of "buildah copy <container_name/id> source destination" command
   buildah_copy:
-    name: c3897c41ac18    # <=== target container
-    src: '/tmp/file.conf' # <=== file in target buildah host
+    name: c3897c41ac18     # <=== target container
+    src: '/tmp/file.conf'  # <=== file in target buildah host
   register: result
 
 - debug: var=result.stdout_lines
 
 - name: BUILDAH | Test output of "buildah copy <container_name/id> source destination" command
   buildah_copy:
-    name: c3897c41ac18    # <=== target container
-    src: '/tmp/file.conf' # <=== file that exists on target buildah host
-    dest: '/etc/file.com' # <=== destination file on target container storage
+    name: c3897c41ac18     # <=== target container
+    src: '/tmp/file.conf'  # <=== file that exists on target buildah host
+    dest: '/etc/file.com'  # <=== destination file on target container storage
   register: result
 
 - debug: var=result.stdout_lines
 
 - name: BUILDAH | Test output of "buildah copy <container_name/id> source " command
   buildah_copy:
-    name: c3897c41ac18    # <=== target container
-    src: '/tmp/file.conf' # <=== file in target buildah host
-    chown: 'claudiol:claudiol' # <=== Change owner:group
+    name: c3897c41ac18     # <=== target container
+    src: '/tmp/file.conf'  # <=== file in target buildah host
+    chown: 'claudiol:claudiol'  # <=== Change owner:group
   register: result
 
 - debug: var=result.stdout_lines
