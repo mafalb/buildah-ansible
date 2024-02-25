@@ -1,3 +1,4 @@
+---
 - name: BUILDAH | Create a buildah
   mafalb.buildah.buildah_from:
     name: fedora:latest
@@ -46,3 +47,4 @@
 - name: BUILDAH | Debug
   ansible.builtin.debug:
     var: result.stdout_lines
+...

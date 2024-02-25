@@ -1,3 +1,4 @@
+---
 # - name: BUILDAH | Test output of "buildah rmi using --prune" command
 #   buildah_rmi:
 #     prune: true
@@ -39,3 +40,4 @@
 - name: BUILDAH | Debug
   ansible.builtin.debug:
     var: result
+...
