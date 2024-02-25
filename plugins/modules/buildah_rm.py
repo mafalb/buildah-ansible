@@ -45,7 +45,6 @@ options:
   name:
     description: containerID
     type: str
-    required: true
   all:
     description: remove all containers
     type: bool

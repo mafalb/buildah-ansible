@@ -1,4 +1,6 @@
 ---
+exclude_paths:
+  - tests/integration/targets/buildah_from_scratch_demo/files/runecho.sh
 warn_list:
   - galaxy[version-incorrect]
   - galaxy[no-changelog]
