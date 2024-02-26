@@ -27,7 +27,7 @@
     src: targets/buildah_run/files/runecho.sh
     dest: /usr/local/bin/runecho.sh
   register: add_result
-  
+
 - name: BUILDAH | 3 - Test output of "buildah run  <image name> command" command
   mafalb.buildah.buildah_run:
     name: "{{ buildah_name }}"

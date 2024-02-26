@@ -2,7 +2,7 @@
 - name: Setup Buildah | buildah is installed
   when: false
   become: true
-  package:
+  ansible.builtin.package:
     name: buildah
 
 - name: Setup Buildah | Create a buildah
@@ -13,11 +13,13 @@
 - name: Setup Buildah | Get container ID
   ansible.builtin.command:
     cmd: buildah ls -f name={{ __buildah.stdout | trim }} -n --format "{{ '{{' }} .ContainerID {{ '}}' }}"
+  changed_when: false
   register: __container_id
 
 - name: Setup Buildah | Get image ID
   ansible.builtin.command:
     cmd: buildah ls -f name={{ __buildah.stdout | trim }} -n --format "{{ '{{' }} .ImageID {{ '}}' }}"
+  changed_when: false
   register: __image_id
 
 - name: Setup Buildah | Create a second buildah
@@ -28,11 +30,13 @@
 - name: Setup Buildah | Get container ID
   ansible.builtin.command:
     cmd: buildah ls -f name={{ __buildah2.stdout | trim }} -n --format "{{ '{{' }} .ContainerID {{ '}}' }}"
+  changed_when: false
   register: __container_id2
 
 - name: Setup Buildah | Get image ID for __buildah2
   ansible.builtin.command:
     cmd: buildah ls -f name={{ __buildah2.stdout | trim }} -n --format "{{ '{{' }} .ImageID {{ '}}' }}"
+  changed_when: false
   register: __image_id2
 
 - name: Setup Buildah | Debug
