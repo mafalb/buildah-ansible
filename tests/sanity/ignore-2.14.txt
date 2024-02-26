@@ -1,1 +1,2 @@
 tests/integration/targets/buildah_from_scratch_demo/files/runecho.sh shebang
+tests/integration/targets/buildah_run/files/runecho.sh shebang
