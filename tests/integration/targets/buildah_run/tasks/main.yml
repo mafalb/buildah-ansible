@@ -1,12 +1,7 @@
 ---
-- name: BUILDAH | Create a buildah
-  mafalb.buildah.buildah_from:
-    name: fedora:latest
-  register: __buildah
-
 - name: BUILDAH | 1 - Test output of "buildah run  <image name> command" command
   mafalb.buildah.buildah_run:
-    name: "{{ __buildah.stdout | trim }}"
+    name: "{{ buildah_name }}"
     command: 'ls'
     args: ['-la', '/etc']
   register: result
@@ -17,7 +12,7 @@
 
 - name: BUILDAH | 2 - Test output of "buildah run  <image name> command" command
   mafalb.buildah.buildah_run:
-    name: "{{ __buildah.stdout | trim }}"
+    name: "{{ buildah_name }}"
     command: 'cat'
     args: '/etc/resolv.conf'
   register: result
@@ -26,11 +21,18 @@
   ansible.builtin.debug:
     var: result.stdout_lines
 
+- name: Add a shell script to the image
+  mafalb.buildah.buildah_add:
+    name: "{{ buildah_name }}"
+    src: targets/buildah_run/files/runecho.sh
+    dest: /usr/local/bin/runecho.sh
+  register: add_result
+  
 - name: BUILDAH | 3 - Test output of "buildah run  <image name> command" command
   mafalb.buildah.buildah_run:
-    name: "{{ __buildah.stdout | trim }}"
+    name: "{{ buildah_name }}"
     command: 'chmod'
-    args: ['a+r', '/tmp/test.py']
+    args: ['a+r', '/usr/local/bin/runecho.sh']
   register: result
 
 - name: BUILDAH | Debug
@@ -39,9 +41,19 @@
 
 - name: BUILDAH | 3 - Test output of "buildah run  <image name> command" command
   mafalb.buildah.buildah_run:
-    name: "{{ __buildah.stdout | trim }}"
+    name: "{{ buildah_name }}"
     command: 'chown'
-    args: ['root:root', '/tmp/test.py']
+    args: ['root:root', '/usr/local/bin/runecho.sh']
+  register: result
+
+- name: BUILDAH | Debug
+  ansible.builtin.debug:
+    var: result.stdout_lines
+
+- name: BUILDAH | 3 - Test output of "buildah run  <image name> command" command
+  mafalb.buildah.buildah_run:
+    name: "{{ buildah_name }}"
+    command: '/usr/local/bin/runecho.sh'
   register: result
 
 - name: BUILDAH | Debug

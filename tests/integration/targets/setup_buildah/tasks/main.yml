@@ -1,0 +1,41 @@
+---
+- name: Setup Buildah | buildah is installed
+  when: false
+  become: true
+  package:
+    name: buildah
+
+- name: Setup Buildah | Create a buildah
+  mafalb.buildah.buildah_from:
+    name: ubuntu:22.04  # this is cached on github action runners
+  register: __buildah
+
+- name: Setup Buildah | Get container ID
+  ansible.builtin.command:
+    cmd: buildah ls -f name={{ __buildah.stdout | trim }} -n --format "{{ '{{' }} .ContainerID {{ '}}' }}"
+  register: __container_id
+
+- name: Setup Buildah | Get image ID
+  ansible.builtin.command:
+    cmd: buildah ls -f name={{ __buildah.stdout | trim }} -n --format "{{ '{{' }} .ImageID {{ '}}' }}"
+  register: __image_id
+
+- name: Setup Buildah | Create a second buildah
+  mafalb.buildah.buildah_from:
+    name: ubuntu:20.04  # this is cached on github action runners
+  register: __buildah2
+
+- name: Setup Buildah | Get container ID
+  ansible.builtin.command:
+    cmd: buildah ls -f name={{ __buildah2.stdout | trim }} -n --format "{{ '{{' }} .ContainerID {{ '}}' }}"
+  register: __container_id2
+
+- name: Setup Buildah | Get image ID for __buildah2
+  ansible.builtin.command:
+    cmd: buildah ls -f name={{ __buildah2.stdout | trim }} -n --format "{{ '{{' }} .ImageID {{ '}}' }}"
+  register: __image_id2
+
+- name: Setup Buildah | Debug
+  ansible.builtin.debug:
+    var: __buildah
+...

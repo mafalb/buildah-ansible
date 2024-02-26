@@ -1,34 +1,45 @@
 ---
 - name: BUILDAH | Test "buildah from" command
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_from:
     name: scratch
   register: from_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: from_result.stdout
 
 - name: BUILDAH | Test "buildah mount" command
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_mount:
     name: "{{ from_result.stdout | trim }}"
   register: mount_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: mount_result.stdout
 
 - name: Install packages
+  when: running_on_ci is defined
+  become: true
   ansible.builtin.dnf:
     name: bash,coreutils
-    installroot: "{{ mount_result.stdout | replace('\n', '')}}"
+    installroot: "{{ mount_result.stdout | trim }}"
     releasever: 29
   register: dnf_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: dnf_result
 
 - name: Copy BASH shell script to the rmeote machine
+  when: running_on_ci is defined
+  become: true
   ansible.builtin.copy:
     src: ./files/runecho.sh
     dest: /tmp/runecho.sh
@@ -38,23 +49,29 @@
   register: copy_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: copy_result
 
 - name: Add a shell script to the image
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_add:
-    name: "{{ from_result.stdout | replace('\n', '')}}"
+    name: "{{ from_result.stdout | trim }}"
     src: /tmp/runecho.sh
     dest: /usr/local/bin/runecho.sh
   register: add_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: add_result
 
 - name: Configure the container meta data
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_config:
-    name: "{{ from_result.stdout | replace('\n', '')}}"
+    name: "{{ from_result.stdout | trim }}"
     author: ansible-buildah demo
     created_by: ansibles-buildah demo
     comment: This is a bash shell image.
@@ -62,20 +79,26 @@
   register: config_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: config_result
 
 - name: Commit container to an image
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_commit:
-    container: "{{ from_result.stdout | replace('\n', '')}}"
+    container: "{{ from_result.stdout | trim }}"
     imgname: "{{ imagename }}"
   register: commit_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: commit_result
 
 - name: Push image to Registry
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_push:
     name: "{{ imagename }}"
     dest: "{{ registryname }}/{{ imagename }}"
@@ -85,5 +108,6 @@
   register: push_result
 
 - name: Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: push_result

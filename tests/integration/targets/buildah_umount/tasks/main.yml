@@ -1,19 +1,25 @@
 ---
 - name: BUILDAH | Test output of "buildah umount using container ID" command
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_umount:
-    name: c3897c41ac18
+    name: "{{ container_id }}"
   register: result
 
 - name: BUILDAH | Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: result
 
-- name: BUILDAH | Test output of "buildah umount using container_name" command
+- name: BUILDAH | Test output of "buildah umount --all" command
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_umount:
     all: true
   register: result
 
 - name: BUILDAH | Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: result
 ...

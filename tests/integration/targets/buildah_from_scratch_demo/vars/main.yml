@@ -1,5 +1,0 @@
----
-imagename: myfedoratest
-registryname: "quay.io/<your repo>"
-registrycreds: your <userid:passwd>
-...

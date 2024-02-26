@@ -1,20 +1,25 @@
 ---
-- name: BUILDAH | Test output of "buildah mount using container_name" command
+- name: Buildah mount | Test output of "buildah mount using container_name" command
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_mount:
-    name: working-container
-    truncate: true
+    name: "{{ buildah_name }}"
   register: result
 
-- name: BUILDAH | Debug
+- name: Buildah mount | Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: result
 
 - name: BUILDAH | Test output of "buildah mount using container ID" command
+  when: running_on_ci is defined
+  become: true
   mafalb.buildah.buildah_mount:
-    name: 79f3b6b5804f
+    name: "{{ container_id2 }}"
   register: result
 
 - name: BUILDAH | Debug
+  when: running_on_ci is defined
   ansible.builtin.debug:
     var: result.stdout_lines
 ...

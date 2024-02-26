@@ -1,0 +1,5 @@
+---
+# __buildah from setup_buildah role
+buildah_name: "{{ __buildah.stdout | trim }}"
+buildah_id: "{{ __container_id.stdout | trim }}"
+...

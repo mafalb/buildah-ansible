@@ -1,0 +1,6 @@
+---
+dependencies:
+  - role: setup_buildah
+    when: running_on_ci is defined
+    become: true
+...

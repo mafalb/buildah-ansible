@@ -1,0 +1,4 @@
+---
+# __buildah from setup_buildah role
+image_id: "{{ __image_id.stdout | trim }}"
+...
